@@ -1,0 +1,8 @@
+bin/getfsent.pl
+Changes
+lib/BSD/Getfsent.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/BSD-Getfsent.t
