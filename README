@@ -1,11 +1,19 @@
 BSD::Getfsent
 =============
 
-Get file system entries
+Get file system descriptor file entry
 
 INSTALLATION
 
-To install this module type the following:
+To install this module, run the following commands:
+
+   perl Build.PL
+   ./Build
+   ./Build test
+   ./Build install
+   
+Alternatively, to install via the Makefile.PL, 
+you can use the following commands:
 
    perl Makefile.PL
    make
@@ -16,7 +24,7 @@ SCRIPTS
 
 bin/getfsent.pl
 
-Outputs file system entries.
+Prints file system descriptor entries.
 
 LICENSE
 
@@ -25,4 +33,4 @@ you may redistribute it and/or modify it under the same terms as Perl itself.
 
 AUTHOR
 
-Steven Schubiger
+Steven Philip Schubiger, <steven@accognoscere.org>

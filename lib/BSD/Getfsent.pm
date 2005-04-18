@@ -1,32 +1,29 @@
 package BSD::Getfsent;
 
-$VERSION = '0.12';
+$VERSION = '0.13';
 @EXPORT_OK = qw(getfsent);
 
-use strict 'vars';
-use vars qw($ENTRIES $FSTAB);
+use strict;
+no strict 'refs';
 use base qw(Exporter);
+
 use Carp 'croak';
 use FileHandle;
 
-
-$ENTRIES = __PACKAGE__.'::_fsents';
-$FSTAB = '/etc/fstab';
-
+our $ENTRIES = __PACKAGE__ . '::_fsents';
+our $FSTAB   = '/etc/fstab';
 
 sub getfsent {   
     if (wantarray) {
-        unless (${$ENTRIES}) {
-            @{$ENTRIES} = @{_parse_entries()};
-            ${$ENTRIES} = 1;
+        unless ($$ENTRIES) {
+            @$ENTRIES = @{_parse_entries()};
+            $$ENTRIES = 1;
         }
 	 
-        if (@{$ENTRIES}) {
-	    return @{shift @{$ENTRIES}};
-	}
-	else { 
-	    ${$ENTRIES} = 0;
-	    
+        if (@$ENTRIES) {
+	    return @{shift @$ENTRIES};
+	} else { 
+	    $$ENTRIES = 0;	    
 	    return (); 
 	}
     }
@@ -43,17 +40,17 @@ sub _parse_entries {
 	my @entry = split;
 	
 	if ($entry[3] !~ /,/) {                       # In case element 4, fs_type, doesn't
-	    splice( @entry, 3, 1, '', $entry[3] );    # contain fs_mntops, insert blank fs_mntops     
+	    splice(@entry, 3, 1, '', $entry[3]);      # contain fs_mntops, insert blank fs_mntops     
 	}                                             # at index 3 and move fs_type to index 4.
 	else {          
-	    splice( @entry, 3, 1,                     # In case element 4 contains fs_type and
-	      (reverse split ',', $entry[3], 2) );    # fs_mntops, switch fs_mntops to index 3 and 
+	    splice(@entry, 3, 1,                      # In case element 4 contains fs_type and
+	      (reverse split ',', $entry[3], 2));     # fs_mntops, switch fs_mntops to index 3 and 
 	}                                             # fs_type to index 4.	
 	
 	@{$entries[$i]} = @entry;
     }
     
-    _close_fh( $fh );
+    _close_fh($fh);
     
     return \@entries;
 }
@@ -63,7 +60,7 @@ sub _count_entries {
     
     my $fh = _open_fh();   
     $counted_entries++ while <$fh>;
-    _close_fh( $fh ); 
+    _close_fh($fh); 
     
     return $counted_entries;
 }    
@@ -97,8 +94,10 @@ BSD::Getfsent - Get file system descriptor file entry
 
 =head1 DESCRIPTION
 
-C<getfsent()> reads the next line of the file, opening the file if necessary. 
-Returns in array context each file system entry.      
+In array context, each file system entry is returned.
+
+C<getfsent()> then continuously reads the next line of the /etc/fstab file, 
+opening the file if necessary.
 
  $entry[0]    # block special device name 
  $entry[1]    # file system path prefix
@@ -110,14 +109,6 @@ Returns in array context each file system entry.
 
 In scalar context, total of entries is returned.
 
-=head1 DIAGNOSTICS
-
-A void context is returned on EOF, invalid entry, or error.
-
-=head1 OBSOLESCENT INTERFACES
-
-getfsent() is to be obsoleted at a future date.
-
 =head1 FILES
 
 F</etc/fstab>
@@ -128,6 +119,10 @@ C<getfsent()> is exportable.
 
 =head1 SEE ALSO
 
-fstab(5), getfsent(3) 
+fstab(5), getfsent(3)
+
+=head1 AUTHOR
+
+Steven Philip Schubiger, <steven@accognoscere.org> 
 
 =cut

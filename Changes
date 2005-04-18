@@ -1,5 +1,9 @@
 Revision history for Perl extension BSD::Getfsent.
 
+0.13 2005/03/17
+ - Suitable Build.PL added.
+ - Minor additions to the docs.
+
 0.12 2005/02/23
  - Namespace changed from previously Filesys::Getfsent
    to BSD::Getfsent as proposed by others.

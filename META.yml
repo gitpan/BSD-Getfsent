@@ -1,9 +1,14 @@
 --- #YAML:1.0
-module_name: BSD-Getfsent
-dist_version_from: lib/BSD/Getfsent.pm
-installdirs: site
-requires:
-    Exporter: 0 
-distribution_type: module
+name: BSD-Getfsent
+version: 0.13
+author:
+  - Steven Philip Schubiger, <steven@accognoscere.org>
+abstract: Get file system descriptor file entry
 license: perl
-dist_abstract: Get file system entries
+requires:
+  Exporter: 0
+provides:
+  BSD::Getfsent:
+    file: lib/BSD/Getfsent.pm
+    version: 0.13
+generated_by: Module::Build version 0.2610
