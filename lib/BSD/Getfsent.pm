@@ -1,20 +1,23 @@
 package BSD::Getfsent;
 
-$VERSION = '0.13';
-@EXPORT_OK = qw(getfsent);
-
 use strict;
-no strict 'refs';
+use warnings;
 use base qw(Exporter);
 
-use Carp 'croak';
-use FileHandle;
+use Carp ();
+use IO::File ();
 
-our $ENTRIES = __PACKAGE__ . '::_fsents';
-our $FSTAB   = '/etc/fstab';
+our ($VERSION, @EXPORT_OK, $ENTRIES, $FSTAB);
+
+$VERSION = '0.14';
+@EXPORT_OK = qw(getfsent);
+$ENTRIES = __PACKAGE__ . '::_fsents';
+$FSTAB = '/etc/fstab';
 
 sub getfsent {   
     if (wantarray) {
+        no strict 'refs';
+	
         unless ($$ENTRIES) {
             @$ENTRIES = @{_parse_entries()};
             $$ENTRIES = 1;
@@ -26,13 +29,12 @@ sub getfsent {
 	    $$ENTRIES = 0;	    
 	    return (); 
 	}
-    }
+    } 
     else { return _count_entries() }
 }
 
 sub _parse_entries {
-    my @entries;
-    
+    my @entries;   
     my $fh = _open_fh();
     
     for (my $i = 0; local $_ = <$fh>; $i++) {
@@ -41,8 +43,7 @@ sub _parse_entries {
 	
 	if ($entry[3] !~ /,/) {                       # In case element 4, fs_type, doesn't
 	    splice(@entry, 3, 1, '', $entry[3]);      # contain fs_mntops, insert blank fs_mntops     
-	}                                             # at index 3 and move fs_type to index 4.
-	else {          
+	} else {                                      # at index 3 and move fs_type to index 4.
 	    splice(@entry, 3, 1,                      # In case element 4 contains fs_type and
 	      (reverse split ',', $entry[3], 2));     # fs_mntops, switch fs_mntops to index 3 and 
 	}                                             # fs_type to index 4.	
@@ -66,8 +67,8 @@ sub _count_entries {
 }    
 
 sub _open_fh {
-    my $fh = new FileHandle $FSTAB, 'r'
-      or croak "Couldn't open $FSTAB: $!";
+    my $fh = IO::File->new("<$FSTAB")
+      or Carp::croak "Can't open $FSTAB: $!";
       
     return $fh;
 }
@@ -123,6 +124,13 @@ fstab(5), getfsent(3)
 
 =head1 AUTHOR
 
-Steven Philip Schubiger, <steven@accognoscere.org> 
+Steven Schubiger <schubiger@cpan.org>
+
+=head1 LICENSE
+
+This program is free software; you may redistribute it and/or 
+modify it under the same terms as Perl itself.
+
+See L<http://www.perl.com/perl/misc/Artistic.html>	    
 
 =cut

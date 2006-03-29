@@ -1,36 +1,44 @@
-BSD::Getfsent
-=============
+NAME
+    BSD::Getfsent - Get file system descriptor file entry
 
-Get file system descriptor file entry
+SYNOPSIS
+     use BSD::Getfsent qw(getfsent);
 
-INSTALLATION
+     while (@entry = getfsent()) {
+        print "@entry\n";
+     }
 
-To install this module, run the following commands:
+DESCRIPTION
+    In array context, each file system entry is returned.
 
-   perl Build.PL
-   ./Build
-   ./Build test
-   ./Build install
-   
-Alternatively, to install via the Makefile.PL, 
-you can use the following commands:
+    "getfsent()" then continuously reads the next line of the /etc/fstab
+    file, opening the file if necessary.
 
-   perl Makefile.PL
-   make
-   make test
-   make install
-   
-SCRIPTS
+     $entry[0]    # block special device name 
+     $entry[1]    # file system path prefix
+     $entry[2]    # type of file system
+     $entry[3]    # comma separated mount options
+     $entry[4]    # rw, ro, sw, or xx
+     $entry[5]    # dump frequency, in days 
+     $entry[6]    # pass number on parallel fsck
 
-bin/getfsent.pl
+    In scalar context, total of entries is returned.
 
-Prints file system descriptor entries.
+FILES
+    /etc/fstab
 
-LICENSE
+EXPORT
+    "getfsent()" is exportable.
 
-This program is free software;
-you may redistribute it and/or modify it under the same terms as Perl itself.
+SEE ALSO
+    fstab(5), getfsent(3)
 
 AUTHOR
+    Steven Schubiger <schubiger@cpan.org>
 
-Steven Philip Schubiger, <steven@accognoscere.org>
+LICENSE
+    This program is free software; you may redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+    See http://www.perl.com/perl/misc/Artistic.html
+
